@@ -8,9 +8,15 @@
 // according to those terms.
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-import { addWithId, DeepPatch, deepSignal, DeepSignalOptions, effect } from '../../';
-import { setSetEntrySyntheticId } from '../../deepSignal';
-import { watch } from '../../watch';
+import {
+  addWithId,
+  DeepPatch,
+  deepSignal,
+  DeepSignalOptions,
+  effect,
+} from '..';
+import { setSetEntrySyntheticId } from '../deepSignal';
+import { watch } from '../watch';
 
 describe('watch', () => {
   it('watch immediate', () => {
@@ -133,7 +139,9 @@ describe('watch (patch mode)', () => {
       c: 2,
     });
     const out: DeepPatch[][] = [];
-    const { stopListening: stop } = watch(state, ({ patches }) => out.push(patches));
+    const { stopListening: stop } = watch(state, ({ patches }) =>
+      out.push(patches),
+    );
     delete state.a.b;
     delete state.c;
     await Promise.resolve();
@@ -149,7 +157,9 @@ describe('watch (patch mode)', () => {
     const a = deepSignal({ x: 1 });
     const b = deepSignal({ y: 2 });
     const out: DeepPatch[][] = [];
-    const { stopListening: stop } = watch(a, ({ patches }) => out.push(patches));
+    const { stopListening: stop } = watch(a, ({ patches }) =>
+      out.push(patches),
+    );
     b.y = 3;
     a.x = 2;
     await Promise.resolve();
@@ -396,8 +406,8 @@ describe('watch (patch mode)', () => {
     state.graph.add(innerB);
     ([...innerA][0] as any).x = 2;
     await Promise.resolve();
-    const pathStrings = batches.flat().map((p) => p.path.join('.'));
-    expect(pathStrings.some((p) => p.startsWith('graph.'))).toBe(true);
+    const pathStrings = batches.flat().map(p => p.path.join('.'));
+    expect(pathStrings.some(p => p.startsWith('graph.'))).toBe(true);
     stop();
   });
 
@@ -411,10 +421,13 @@ describe('watch (patch mode)', () => {
       },
     );
     const collected: DeepPatch[][] = [];
-    const { stopListening: stop } = watch(st, ({ patches }) => collected.push(patches));
+    const { stopListening: stop } = watch(st, ({ patches }) =>
+      collected.push(patches),
+    );
     let proxied: any;
     for (const e of st.bag.values()) {
       proxied = e;
+      // oxlint-disable-next-line no-unused-expressions
       e.data.val;
     }
     proxied.data.val = 2;
@@ -473,15 +486,19 @@ describe('watch (patch mode)', () => {
     expect(newObj['@graph']).toBe('did:ng:test-graph');
 
     const allPatches = patches.flat();
-    const idPatch = allPatches.find((p) => p.path.length === 2 && p.path[1] === '@id');
+    const idPatch = allPatches.find(
+      p => p.path.length === 2 && p.path[1] === '@id',
+    );
     const graphPatch = allPatches.find(
-      (p) => p.path.length === 2 && p.path[1] === '@graph',
+      p => p.path.length === 2 && p.path[1] === '@graph',
     );
 
     expect(idPatch).toBeDefined();
     expect(idPatch?.op).toBe('add');
     expect((idPatch as any)?.value).toBeDefined();
-    expect((idPatch as any)?.value?.startsWith('did:ng:test-subject')).toBeTruthy();
+    expect(
+      (idPatch as any)?.value?.startsWith('did:ng:test-subject'),
+    ).toBeTruthy();
 
     expect(graphPatch).toBeDefined();
     expect(graphPatch?.op).toBe('add');
@@ -506,7 +523,7 @@ describe('watch (patch mode)', () => {
       const patches = batches[0];
       expect(patches.length).toBe(3);
 
-      patches.forEach((p) => {
+      patches.forEach(p => {
         expect(p.path.join('.')).toBe('s');
         expect(p.op).toBe('add');
         expect((p as any).type).toBe('set');
@@ -532,7 +549,7 @@ describe('watch (patch mode)', () => {
       const patches = batches[0];
       expect(patches.length).toBe(2);
 
-      patches.forEach((p) => {
+      patches.forEach(p => {
         expect(p.path.join('.')).toBe('s');
         expect(p.op).toBe('remove');
         expect((p as any).type).toBe('set');
@@ -582,7 +599,7 @@ describe('watch (patch mode)', () => {
       await Promise.resolve();
       const structuralPatches = batches
         .flat()
-        .filter((p) => p.path.length === 1 && p.path[0] === 's');
+        .filter(p => p.path.length === 1 && p.path[0] === 's');
       expect(structuralPatches.length).toBe(1);
       expect(structuralPatches[0].op).toBe('add');
       expect((structuralPatches[0] as any).value).toEqual([]);
@@ -606,8 +623,8 @@ describe('watch (patch mode)', () => {
       await Promise.resolve();
       const all = patches
         .flat()
-        .filter((p) => p.op === 'remove')
-        .map((p) => p.path.join('.'));
+        .filter(p => p.op === 'remove')
+        .map(p => p.path.join('.'));
       expect(all).toContain('s.n1');
       stop();
     });
@@ -642,7 +659,7 @@ describe('watch (patch mode)', () => {
       const ret = addWithId(st.s as any, 5, 'ignored');
       expect(ret).toBe(5);
       await Promise.resolve();
-      const paths = patches.flat().map((p) => p.path.join('.'));
+      const paths = patches.flat().map(p => p.path.join('.'));
       expect(paths).toContain('s');
       const values = patches.flat().map((p: any) => p.value?.[0]);
       expect(values).toContain(5);
@@ -658,24 +675,29 @@ describe('watch (patch mode)', () => {
       );
       st.s.add(obj);
       await Promise.resolve();
-      const paths = patches.flat().map((p) => p.path.join('.'));
+      const paths = patches.flat().map(p => p.path.join('.'));
       expect(paths).toContain('s.customX');
       stop();
     });
     it('values/entries/forEach proxy nested mutation', async () => {
       const st = deepSignal({ s: new Set<any>() });
-      const entry = addWithId(st.s as any, { id: 'e1', inner: { v: 1 } }, 'e1');
+      const entry = addWithId(
+        st.s as any,
+        { id: 'e1', inner: { v: 1 } },
+        'e1',
+      );
       const batches: DeepPatch[][] = [];
       const { stopListening: stop } = watch(st, ({ patches }) =>
         batches.push(patches),
       );
       for (const e of st.s.values()) {
+        // oxlint-disable-next-line no-unused-expressions
         e.inner.v;
       }
       entry.inner.v = 2;
       await Promise.resolve();
-      const vPaths = batches.flat().map((p) => p.path.join('.'));
-      expect(vPaths.some((p) => p.endsWith('e1.inner.v'))).toBe(true);
+      const vPaths = batches.flat().map(p => p.path.join('.'));
+      expect(vPaths.some(p => p.endsWith('e1.inner.v'))).toBe(true);
       stop();
     });
     it('raw reference mutation produces no deep patch while proxied does', async () => {
@@ -693,14 +715,14 @@ describe('watch (patch mode)', () => {
       );
       raw.data.x = 2;
       await Promise.resolve();
-      const afterRaw = batches.flat().map((p) => p.path.join('.'));
-      expect(afterRaw.some((p) => p.endsWith('id1.data.x'))).toBe(false);
+      const afterRaw = batches.flat().map(p => p.path.join('.'));
+      expect(afterRaw.some(p => p.endsWith('id1.data.x'))).toBe(false);
       let proxied: any;
       for (const e of st.s.values()) proxied = e;
       proxied.data.x = 3;
       await Promise.resolve();
-      const afterProxied = batches.flat().map((p) => p.path.join('.'));
-      expect(afterProxied.some((p) => p.endsWith('id1.data.x'))).toBe(true);
+      const afterProxied = batches.flat().map(p => p.path.join('.'));
+      expect(afterProxied.some(p => p.endsWith('id1.data.x'))).toBe(true);
       stop();
     });
     it('synthetic id collision assigns unique blank node id', async () => {
@@ -717,9 +739,9 @@ describe('watch (patch mode)', () => {
       const setAddPatches = patches
         .flat()
         .filter(
-          (p) => p.op === 'add' && p.path.length === 2 && p.path[0] === 's',
+          p => p.op === 'add' && p.path.length === 2 && p.path[0] === 's',
         );
-      const keys = setAddPatches.map((p) => p.path.slice(-1)[0]);
+      const keys = setAddPatches.map(p => p.path.slice(-1)[0]);
       expect(new Set(keys).size).toBe(2);
       stop();
     });
@@ -745,8 +767,8 @@ describe('watch (patch mode)', () => {
       );
       spread[0].inner.v = 2;
       await Promise.resolve();
-      const flat = batches.flat().map((p) => p.path.join('.'));
-      expect(flat.some((p) => p.endsWith('eIter.inner.v'))).toBe(true);
+      const flat = batches.flat().map(p => p.path.join('.'));
+      expect(flat.some(p => p.endsWith('eIter.inner.v'))).toBe(true);
       stop();
     });
 
@@ -765,7 +787,7 @@ describe('watch (patch mode)', () => {
       const patches = batches[0];
       expect(patches.length).toBe(3);
 
-      patches.forEach((p) => {
+      patches.forEach(p => {
         expect(p.path).toEqual([]);
         expect(p.op).toBe('add');
         expect((p as any).type).toBe('set');
@@ -796,7 +818,7 @@ describe('watch (patch mode)', () => {
       rootSet.add(obj2);
       await Promise.resolve();
 
-      const flat = batches.flat().map((p) => p.path.join('.'));
+      const flat = batches.flat().map(p => p.path.join('.'));
 
       expect(flat).toContain('obj1');
       expect(flat).toContain('obj1.@id');
@@ -828,8 +850,8 @@ describe('watch (patch mode)', () => {
       proxied.data.x = 2;
       await Promise.resolve();
 
-      const flat = batches.flat().map((p) => p.path.join('.'));
-      expect(flat.some((p) => p === 'nested.data.x')).toBe(true);
+      const flat = batches.flat().map(p => p.path.join('.'));
+      expect(flat.some(p => p === 'nested.data.x')).toBe(true);
       stop();
     });
   });
@@ -906,15 +928,16 @@ describe('watch (patch mode)', () => {
       addWithId(st.s as any, { id: 'z', v: 1 }, 'z');
       await Promise.resolve();
       expect(batches.length).toBe(1);
-      const paths = batches[0].map((p) => p.path.join('.'));
+      const paths = batches[0].map(p => p.path.join('.'));
       expect(paths).toContain('o.a');
       expect(paths).toContain('arr.1');
-      expect(paths.some((p) => p.startsWith('s.'))).toBe(true);
+      expect(paths.some(p => p.startsWith('s.'))).toBe(true);
       stop();
     });
     it('mutating existing Set property emits correct patches', async () => {
       const obj2 = {
-        '@id': 'urn:test:obj2|did:ng:o:xypN3xdPs4ozIXaCFOQ5tDmq86q0szbqtCQmcqTcMTcA:v:QvO7rDIp1MCUs3Xec-yQBl0kHjMmLzoUOU4m6qy6b4EA',
+        '@id':
+          'urn:test:obj2|did:ng:o:xypN3xdPs4ozIXaCFOQ5tDmq86q0szbqtCQmcqTcMTcA:v:QvO7rDIp1MCUs3Xec-yQBl0kHjMmLzoUOU4m6qy6b4EA',
         setProperty: new Set([1, 2, 3]),
       };
       const st = deepSignal<{ items: Set<any> }>(
@@ -945,14 +968,16 @@ describe('watch (patch mode)', () => {
 
       const patches = batches.flat();
 
-      const objectPatches = patches.filter((p: any) => p.type === 'object');
+      const objectPatches = patches.filter(
+        (p: any) => p.type === 'object',
+      );
       expect(objectPatches.length).toBe(0);
 
-      const removePatches = patches.filter((p) => p.op === 'remove');
+      const removePatches = patches.filter(p => p.op === 'remove');
       expect(removePatches.length).toBe(1);
       expect((removePatches[0] as any).value).toBe(3);
 
-      const addPatches = patches.filter((p) => p.op === 'add');
+      const addPatches = patches.filter(p => p.op === 'add');
       expect(addPatches.length).toBe(2);
       const addedValues = addPatches.map((p: any) => p.value[0]);
       expect(addedValues).toContain(4);
@@ -962,7 +987,8 @@ describe('watch (patch mode)', () => {
     });
     it('reassigning Set property should not emit deep patches for all elements', async () => {
       const obj2 = {
-        '@id': 'urn:test:obj2|did:ng:o:xypN3xdPs4ozIXaCFOQ5tDmq86q0szbqtCQmcqTcMTcA:v:QvO7rDIp1MCUs3Xec-yQBl0kHjMmLzoUOU4m6qy6b4EA',
+        '@id':
+          'urn:test:obj2|did:ng:o:xypN3xdPs4ozIXaCFOQ5tDmq86q0szbqtCQmcqTcMTcA:v:QvO7rDIp1MCUs3Xec-yQBl0kHjMmLzoUOU4m6qy6b4EA',
         setProperty: new Set([1, 2, 3]),
       };
       const st = deepSignal<{ items: Set<any> }>(
@@ -991,11 +1017,13 @@ describe('watch (patch mode)', () => {
 
       const patches = batches.flat();
 
-      const objectPatches = patches.filter((p: any) => p.type === 'object');
+      const objectPatches = patches.filter(
+        (p: any) => p.type === 'object',
+      );
       expect(objectPatches.length).toBe(0);
 
       const elementPatches = patches.filter(
-        (p) =>
+        p =>
           (p.path.length > 2 && p.path[p.path.length - 1] === 4) ||
           p.path[p.path.length - 1] === 5,
       );
@@ -1004,7 +1032,9 @@ describe('watch (patch mode)', () => {
       proxiedObj.setProperty.add(6);
       await Promise.resolve();
       const laterPatches = batches.flat();
-      const patch6 = laterPatches.find((p: any) => p.value?.[0] === 6 || p.value === 6);
+      const patch6 = laterPatches.find(
+        (p: any) => p.value?.[0] === 6 || p.value === 6,
+      );
       expect(patch6).toBeDefined();
 
       stop();
@@ -1042,26 +1072,34 @@ describe('watch (patch mode)', () => {
       st.items.add(outerObj);
       await Promise.resolve();
 
-      const outerCall = propGeneratorCalls.find((call) => call.object === outerObj);
+      const outerCall = propGeneratorCalls.find(
+        call => call.object === outerObj,
+      );
       expect(outerCall).toBeDefined();
       expect(outerCall.object['@id']).toBe('outer-with-nested-set');
 
-      const inner1Call = propGeneratorCalls.find((call) => call.object === innerObj1);
+      const inner1Call = propGeneratorCalls.find(
+        call => call.object === innerObj1,
+      );
       expect(inner1Call).toBeDefined();
       expect(inner1Call.object['@id']).toBe('inner1');
 
-      const inner2Call = propGeneratorCalls.find((call) => call.object === innerObj2);
+      const inner2Call = propGeneratorCalls.find(
+        call => call.object === innerObj2,
+      );
       expect(inner2Call).toBeDefined();
       expect(inner2Call.object['@id']).toBe('inner2');
 
       const patches = batches.flat();
-      const flat = patches.map((p) => p.path.join('.'));
+      const flat = patches.map(p => p.path.join('.'));
 
-      expect(flat.some((p) => p.startsWith('items.outer-with-nested-set'))).toBe(true);
+      expect(
+        flat.some(p => p.startsWith('items.outer-with-nested-set')),
+      ).toBe(true);
 
-      expect(flat.some((p) => p.includes('nestedSet'))).toBe(true);
-      expect(flat.some((p) => p.includes('inner1'))).toBe(true);
-      expect(flat.some((p) => p.includes('inner2'))).toBe(true);
+      expect(flat.some(p => p.includes('nestedSet'))).toBe(true);
+      expect(flat.some(p => p.includes('inner1'))).toBe(true);
+      expect(flat.some(p => p.includes('inner2'))).toBe(true);
 
       stop();
     });
@@ -1094,8 +1132,12 @@ describe('watch (patch mode)', () => {
       st.add(outerObj);
       await Promise.resolve();
 
-      expect(propGeneratorCalls.some((call) => call.object === outerObj)).toBe(true);
-      expect(propGeneratorCalls.some((call) => call.object === innerObj)).toBe(true);
+      expect(
+        propGeneratorCalls.some(call => call.object === outerObj),
+      ).toBe(true);
+      expect(
+        propGeneratorCalls.some(call => call.object === innerObj),
+      ).toBe(true);
 
       batches.length = 0;
 
@@ -1113,9 +1155,9 @@ describe('watch (patch mode)', () => {
       await Promise.resolve();
 
       const mutationPatches = batches.flat();
-      const mutationPaths = mutationPatches.map((p) => p.path.join('.'));
+      const mutationPaths = mutationPatches.map(p => p.path.join('.'));
 
-      const prop2Path = mutationPaths.find((p) => p.endsWith('prop2'));
+      const prop2Path = mutationPaths.find(p => p.endsWith('prop2'));
       expect(prop2Path).toBeDefined();
 
       const pathSegments = prop2Path?.split('.');
@@ -1250,7 +1292,9 @@ describe('watch (patch mode)', () => {
       await Promise.resolve();
 
       const proxiedObjs = Array.from(state.s);
-      const proxiedObj2 = proxiedObjs.find((o: any) => o['@id'] === 'obj-2');
+      const proxiedObj2 = proxiedObjs.find(
+        (o: any) => o['@id'] === 'obj-2',
+      );
 
       patches.length = 0;
 
@@ -1259,8 +1303,8 @@ describe('watch (patch mode)', () => {
 
       const deletePaths = patches
         .flat()
-        .filter((p) => p.op === 'remove')
-        .map((p) => p.path.join('.'));
+        .filter(p => p.op === 'remove')
+        .map(p => p.path.join('.'));
 
       expect(deletePaths).toContain('s.obj-2');
       expect(deletePaths).not.toContain('s.obj-1');
@@ -1304,8 +1348,8 @@ describe('watch (patch mode)', () => {
 
       const deletePaths = patches
         .flat()
-        .filter((p) => p.op === 'remove')
-        .map((p) => p.path.join('.'));
+        .filter(p => p.op === 'remove')
+        .map(p => p.path.join('.'));
 
       expect(deletePaths).toContain(`s.${id1}`);
       expect(deletePaths).not.toContain(`s.${id2}`);
@@ -1493,8 +1537,12 @@ describe('watch (triggerInstantly / JIT listeners)', () => {
     state.user.age = 31;
 
     expect(patches).toHaveLength(2);
-    expect(patches[0]).toEqual([{ op: 'add', path: ['user', 'name'], value: 'Bob' }]);
-    expect(patches[1]).toEqual([{ op: 'add', path: ['user', 'age'], value: 31 }]);
+    expect(patches[0]).toEqual([
+      { op: 'add', path: ['user', 'name'], value: 'Bob' },
+    ]);
+    expect(patches[1]).toEqual([
+      { op: 'add', path: ['user', 'age'], value: 31 },
+    ]);
 
     stop();
   });
@@ -1515,7 +1563,9 @@ describe('watch (triggerInstantly / JIT listeners)', () => {
     state.items.delete(1);
 
     expect(patches).toHaveLength(2);
-    expect(patches[0]).toEqual([{ op: 'add', path: ['items'], type: 'set', value: [3] }]);
+    expect(patches[0]).toEqual([
+      { op: 'add', path: ['items'], type: 'set', value: [3] },
+    ]);
     expect(patches[1]).toEqual([
       { op: 'remove', path: ['items'], type: 'set', value: 1 },
     ]);

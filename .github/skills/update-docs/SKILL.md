@@ -1,3 +1,14 @@
+---
+name: update-docs
+description:
+  'Update CHANGELOG.md and README.md after a version upgrade. Use when:
+  bumping version, releasing a new version, documenting recent commits,
+  updating changelog, writing release notes. Compares package.json version
+  with last CHANGELOG entry, collects commits since last release, formats
+  entries with European dates in GMT/UTC, and stops before committing.'
+argument-hint: 'Optional: target version (e.g. 1.7.0)'
+---
+
 # Update Documentation
 
 Update CHANGELOG.md and README.md after version upgrade.

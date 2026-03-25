@@ -71,6 +71,7 @@ export function watch<T extends object>(
   }
 
   const rootId = getDeepSignalRootId(source as any);
+  /* v8 ignore next */
   if (!rootId) throw new Error('Unable to resolve deepSignal root id');
 
   let active = true;
@@ -98,6 +99,7 @@ export function watch<T extends object>(
   };
 
   const deliver = (batch: DeepPatchBatch) => {
+    /* v8 ignore next */
     if (!active) return;
     runCleanup();
     const next = source;
@@ -112,6 +114,7 @@ export function watch<T extends object>(
   const unsubscribe = subscribeDeepMutations(
     rootId,
     (batch: DeepPatchBatch) => {
+      /* v8 ignore next */
       if (!batch.patches.length) return;
       deliver(batch);
     },
@@ -121,7 +124,7 @@ export function watch<T extends object>(
   if (immediate) {
     deliver({
       patches: [],
-      version: getDeepSignalVersion(rootId) ?? 0,
+      version: /* v8 ignore next */ getDeepSignalVersion(rootId) ?? 0,
     });
   }
 

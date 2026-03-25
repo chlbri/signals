@@ -14,7 +14,7 @@ export const iteratorHelperKeys = new Set([
   'flatMap',
   'reduce',
   'toArray',
-  'forEach',
+  // 'forEach',
   'some',
   'every',
   'find',

@@ -8,7 +8,7 @@
 // according to those terms.
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-import { alienSignal, batch, effect } from '../../core';
+import { alienSignal, batch, effect } from '../core';
 
 describe('batch', () => {
   it('returns the value produced by the callback', () => {

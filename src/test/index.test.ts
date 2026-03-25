@@ -8,8 +8,8 @@
 // according to those terms.
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-import { effect } from '../../core';
-import { deepSignal, shallow } from '../../deepSignal';
+import { effect } from '../core';
+import { deepSignal, shallow } from '../deepSignal';
 type Store = {
   a?: number;
   nested: { b?: number };
@@ -42,7 +42,9 @@ describe('deepsignal/core', () => {
       expect(store.a).to.equal(1);
       expect(store.nested.b).to.equal(2);
       expect(store.array[0]).to.equal(3);
-      expect(typeof store.array[1] === 'object' && store.array[1].b).to.equal(2);
+      expect(
+        typeof store.array[1] === 'object' && store.array[1].b,
+      ).to.equal(2);
       expect(store.array.length).to.equal(2);
     });
 
@@ -274,7 +276,9 @@ describe('deepsignal/core', () => {
       expect(store2.a).to.equal(1);
       expect(store2.nested.b).to.equal(2);
       expect(store2.array[0]).to.equal(3);
-      expect(typeof store2.array[1] === 'object' && store2.array[1].b).to.equal(2);
+      expect(
+        typeof store2.array[1] === 'object' && store2.array[1].b,
+      ).to.equal(2);
     });
 
     it('should spread arrays correctly', () => {
@@ -316,7 +320,7 @@ describe('deepsignal/core', () => {
 
       effect(() => {
         sum = 0;
-        sum = store.reduce((sum) => sum + 1, 0);
+        sum = store.reduce(sum => sum + 1, 0);
       });
 
       expect(sum).to.equal(3);
@@ -354,6 +358,7 @@ describe('deepsignal/core', () => {
 
       effect(() => {
         runs += 1;
+        // oxlint-disable-next-line no-unused-expressions
         store.alpha.value;
       });
 
@@ -381,6 +386,7 @@ describe('deepsignal/core', () => {
       let runs = 0;
       effect(() => {
         runs += 1;
+        // oxlint-disable-next-line no-unused-expressions
         (entryA as any).data.value;
       });
 
@@ -429,7 +435,7 @@ describe('deepsignal/core', () => {
 
       effect(() => {
         reduced = store.set
-          .map((value) => value as number)
+          .map(value => value as number)
           .reduce((acc, value) => acc + value, 0);
       });
 

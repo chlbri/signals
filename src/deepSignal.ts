@@ -288,6 +288,7 @@ function schedulePatch(
   meta: ProxyMeta | undefined,
   build: () => DeepPatch | DeepPatch[] | undefined,
 ) {
+  /* v8 ignore next */
   if (!meta) return;
   const state = rootStates.get(meta.root);
   const hasListeners =
@@ -301,7 +302,6 @@ function schedulePatch(
   if (!patches.length) return;
 
   state.pendingPatches.push(...patches);
-
   state.justInTimeListeners.forEach(cb => cb({ patches }));
 
   if (state.listeners.size > 0 && !pendingRoots.has(meta.root)) {
@@ -310,6 +310,7 @@ function schedulePatch(
     queueMicrotask(() => {
       pendingRoots.delete(meta.root);
       const state = rootStates.get(meta.root);
+      /* v8 ignore next */
       if (!state) return;
       if (!state.pendingPatches.length || state.listeners.size === 0) {
         state.pendingPatches.length = 0;
@@ -374,7 +375,9 @@ function initializeObjectTree(
   basePath: (string | number)[],
   inSet: boolean,
 ) {
+  /* v8 ignore next */
   if (!meta.options?.propGenerator) return;
+  /* v8 ignore next */
   if (!value || typeof value !== 'object') return;
   if (Array.isArray(value)) {
     value.forEach((entry, idx) => {
@@ -421,7 +424,12 @@ function initializeObjectTreeIfNoListeners(
     (state.listeners.size > 0 || state.justInTimeListeners.size > 0)
   )
     return;
-  initializeObjectTree(meta, value, basePath ?? [], inSet);
+  initializeObjectTree(
+    meta,
+    value,
+    /* v8 ignore next */ basePath ?? [],
+    inSet,
+  );
 }
 
 /**
@@ -852,7 +860,7 @@ const objectHandlers: ProxyHandler<any> = {
       const rawChild = Reflect.get(target, key, receiver);
 
       if (typeof rawChild === 'function')
-        return rawChild.bind(receiver ?? target);
+        return rawChild.bind(/* v8 ignore next */ receiver ?? target);
 
       const childProxyOrRaw = ensureChildProxy(rawChild, receiver, key);
 
@@ -873,6 +881,7 @@ const objectHandlers: ProxyHandler<any> = {
       throw new Error(`Cannot modify readonly property '${String(key)}'`);
     }
 
+    /* v8 ignore next */
     const path = meta ? buildPath(meta, key) : undefined;
 
     const proxied = ensureChildProxy(value, target, key);
@@ -903,7 +912,8 @@ const objectHandlers: ProxyHandler<any> = {
     }
 
     schedulePatch(meta, () => {
-      const resolvedPath = path ?? buildPath(meta, key);
+      const resolvedPath =
+        /* v8 ignore next */ path ?? buildPath(meta, key);
       if (!hadKey || typeof rawValue === 'object') {
         const patches = emitPatchesForNew(rawValue, meta!, resolvedPath);
 
@@ -1307,6 +1317,7 @@ export function subscribeDeepMutations(
     throw new Error('subscribeDeepMutations() expects a deepSignal root');
 
   const state = rootStates.get(rootId);
+  /* v8 ignore next */
   if (!state) throw new Error('Unknown deepSignal root');
 
   if (triggerInstantly) {

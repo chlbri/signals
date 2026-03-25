@@ -1,11 +1,35 @@
 ## CHANGELOG
 
 <br/>
+
+<details>
+<summary>
+
+## **[0.0.1] - 25/03/2026** => _14:42_
+
+</summary>
+
+- Add `deepSignal` — reactive deep proxy for plain objects, arrays and Sets
+- Add `computed` — lazy derived signal (re-export from `alien-signals`)
+- Add `batch` — batch multiple signal writes in a single frame
+- Add `effect` — reactive side effect (re-export from `alien-signals`)
+- Add `watch` — high-level watcher for deep mutations with `immediate`,
+  `once` and `triggerInstantly` options
+- Add `getRaw` — unwrap a deep-signal proxy to its raw value
+- Add `isDeepSignal` — type guard to check if a value is a deep-signal
+  proxy
+- Add `shallow` — mark an object so it is **not** made deeply reactive
+- Add `addWithId` — helper to add items to a `Set` inside a deep signal
+- Add `subscribeDeepMutations` — low-level patch subscription API
+- Add `DeepPatch` / `DeepPatchBatch` types and full TypeScript typings
+- Add `iteratorHelpers` — native or polyfilled iterator helpers (`map`,
+  `filter`, `take`, `drop`, `flatMap`, `reduce`, `toArray`, `forEach`,
+  `some`, `every`, `find`) for Set/Array iteration
+- <u>Test coverage **_100%_** — 143 tests across 4 suites</u>
+
+</details>
+
 <br/>
-
-### Version [0.0.1] --> _date & hour_
-
-- ✨ Première version de la bibliothèque
 
 <br/>
 

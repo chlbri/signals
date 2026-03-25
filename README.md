@@ -1,6 +1,211 @@
-# Beatifull lib
+# @bemedev/signals
 
-A beautifull description
+Deep structural reactivity for plain objects, arrays and Sets — built on
+top of [alien-signals](https://www.npmjs.com/package/alien-signals),
+**without any frontend-framework dependency**.
+
+Inspired by
+[`@ng-org/alien-deepsignals`](https://www.npmjs.com/package/@ng-org/alien-deepsignals).
+All the core deep-reactivity logic is preserved.
+
+> **Credits** — original deep-signal implementation by
+> [Laurin Weger](https://www.npmjs.com/package/@ng-org/alien-deepsignals)
+> (Par le Peuple / NextGraph.org). Licensed under Apache-2.0 OR MIT.
+
+<br/>
+
+## Installation
+
+```bash
+pnpm add @bemedev/signals
+# or
+npm install @bemedev/signals
+# or
+yarn add @bemedev/signals
+```
+
+> Requires Node.js ≥ 24.
+
+<br/>
+
+## Quick start
+
+```ts
+import {
+  deepSignal,
+  computed,
+  batch,
+  effect,
+  watch,
+} from '@bemedev/signals';
+
+const state = deepSignal({
+  user: { firstName: 'Ada', lastName: 'Lovelace' },
+  scores: [10, 20, 30],
+});
+
+// Derived value — recomputes lazily
+const fullName = computed(
+  () => `${state.user.firstName} ${state.user.lastName}`,
+);
+console.log(fullName()); // "Ada Lovelace"
+
+// Reactive side-effect
+effect(() =>
+  console.log(
+    'Score sum:',
+    state.scores.reduce((a, b) => a + b, 0),
+  ),
+);
+// → "Score sum: 60"
+
+// Batch multiple writes → effects/computed run only once
+batch(() => {
+  state.user.firstName = 'Grace';
+  state.scores.push(40);
+});
+// → "Score sum: 100"
+
+// Watch deep mutations
+const { stopListening } = watch(state, ({ patches, newValue }) => {
+  console.log('patches:', patches);
+  console.log('newValue:', newValue);
+});
+
+state.user.lastName = 'Hopper'; // triggers watch callback
+stopListening(); // unsubscribe
+```
+
+<br/>
+
+## API
+
+### `deepSignal(value, options?)`
+
+Wraps a plain object, array or `Set` in a deep-reactive proxy. Nested
+objects/arrays/Sets are wrapped automatically.
+
+```ts
+const state = deepSignal({ count: 0, tags: new Set(['ts']) });
+state.count = 1; // reactive mutation
+state.tags.add('js'); // reactive Set mutation
+```
+
+**Options** (`DeepSignalOptions`):
+
+| Option                           | Type                             | Description                                                                                   |
+| -------------------------------- | -------------------------------- | --------------------------------------------------------------------------------------------- |
+| `propGenerator`                  | `DeepSignalPropGenFn`            | Called when new objects attach; may return additional properties                              |
+| `syntheticIdPropertyName`        | `string`                         | Property name used as identifier inside `Set` patches                                         |
+| `readOnlyProps`                  | `string[]`                       | Properties that are read-only once attached                                                   |
+| `replaceProxiesInBranchOnChange` | `boolean`                        | Replace proxies on the path to a mutated property — required for identity checks (e.g. React) |
+| `subscriberFactories`            | `Set<ExternalSubscriberFactory>` | External `onGet`/`onSet` hooks                                                                |
+
+---
+
+### `watch(source, callback, options?)`
+
+High-level watcher that fires whenever the deep signal mutates.
+
+```ts
+const { stopListening, registerCleanup } = watch(
+  state,
+  ({ patches, version, newValue }) => {
+    /* ... */
+  },
+  { immediate: false, once: false, triggerInstantly: false },
+);
+```
+
+**`WatchOptions`**:
+
+| Option             | Default | Description                                                                             |
+| ------------------ | ------- | --------------------------------------------------------------------------------------- |
+| `immediate`        | `false` | Fire callback immediately after `watch()` is called                                     |
+| `once`             | `false` | Auto-unsubscribe after first event                                                      |
+| `triggerInstantly` | `false` | Call callback synchronously on every property change instead of batching in a microtask |
+
+---
+
+### `computed(getter)`
+
+Lazy derived signal — re-export from `alien-signals`.
+
+```ts
+const double = computed(() => state.count * 2);
+console.log(double()); // reads the cached value or recomputes
+```
+
+---
+
+### `batch(fn)`
+
+Defers all downstream recomputations until `fn` returns.
+
+```ts
+batch(() => {
+  state.a = 1;
+  state.b = 2;
+}); // effects/computed run once, not twice
+```
+
+---
+
+### `effect(fn)`
+
+Runs `fn` immediately and re-runs it whenever any signal read inside it
+changes. Re-export from `alien-signals`.
+
+---
+
+### `getRaw(proxy)`
+
+Unwraps a deep-signal proxy and returns the underlying raw object.
+
+---
+
+### `isDeepSignal(value)`
+
+Type guard — returns `true` if `value` is a deep-signal proxy created by
+`deepSignal()`.
+
+---
+
+### `shallow(value)`
+
+Marks an object so that it is **not** made deeply reactive when assigned
+into a deep signal.
+
+```ts
+const state = deepSignal({ config: shallow({ debug: true }) });
+// state.config is NOT a reactive proxy
+```
+
+---
+
+### `addWithId(set, item)`
+
+Helper to add an item to a `Set` that lives inside a deep signal, ensuring
+the correct synthetic-id bookkeeping.
+
+---
+
+### `subscribeDeepMutations(rootId, callback, triggerInstantly?)`
+
+Low-level subscription API. Use `watch()` unless you need direct access to
+the patch stream.
+
+<br/>
+
+## Types
+
+| Type                 | Description                                                 |
+| -------------------- | ----------------------------------------------------------- |
+| `DeepSignal<T>`      | A deeply reactive version of `T`                            |
+| `DeepPatch`          | A single structural change (`add` / `remove` with a `path`) |
+| `DeepPatchBatch`     | A versioned batch of `DeepPatch` entries                    |
+| `WatchPatchEvent<T>` | Payload received by a `watch` callback                      |
+| `DeepSignalOptions`  | Options for `deepSignal()`                                  |
 
 <br/>
 
@@ -8,9 +213,9 @@ A beautifull description
 
 MIT
 
-## CHANGE_LOG
+## CHANGELOG
 
-Read [CHANGE_LOG.md](CHANGE_LOG.md) for more details about the changes.
+Read [CHANGELOG.md](CHANGELOG.md) for more details about the changes.
 
 <br/>
 

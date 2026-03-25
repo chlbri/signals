@@ -1,3 +1,11 @@
 {
-  "github-actions.workflows.pinned.workflows": [".github/workflows/ci.yml"]
+  "github-actions.workflows.pinned.workflows": [
+    ".github/workflows/ci.yml"
+  ],
+  "chat.tools.terminal.autoApprove": {
+    "/^cd \"/Users/chlbri/Documents/github/NODE JS/Librairies bemedev/signals\" && pnpm exec vitest run --coverage --coverage\\.reporter=json 2>&1 \\| tail -5 && node -e \"\nconst fs = require\\('fs'\\);\nconst cov = JSON\\.parse\\(fs\\.readFileSync\\('\\.coverage/coverage-final\\.json'\\)\\);\nconst files = Object\\.keys\\(cov\\);\nfiles\\.forEach\\(f => \\{\n  if \\(f\\.includes\\('deepSignal'\\) \\|\\| f\\.includes\\('watch'\\) \\|\\| f\\.includes\\('iteratorHelper'\\)\\) \\{\n    const data = cov\\[f\\];\n    const uncoveredLines = Object\\.entries\\(data\\.s\\)\\.filter\\(\\(\\[k,v\\]\\) => v===0\\)\\.map\\(\\(\\[k\\]\\) => data\\.statementMap\\[k\\]\\);\n    console\\.log\\('=== ' \\+ f\\.split\\('/'\\)\\.slice\\(-1\\)\\[0\\] \\+ ' ==='\\);\n    console\\.log\\('Statements:', JSON\\.stringify\\(uncoveredLines\\.slice\\(0,30\\)\\)\\);\n  \\}\n\\}\\);\n\"$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
+  }
 }

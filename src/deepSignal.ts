@@ -8,8 +8,12 @@
 // according to those terms.
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-import { computed, alienSignal } from './core';
+import { alienSignal, computed } from './core';
 import {
+  createIteratorWithHelpers,
+  iteratorHelperKeys,
+} from './iteratorHelpers';
+import type {
   DeepPatch,
   DeepPatchBatch,
   DeepPatchJITSubscriber,
@@ -22,10 +26,6 @@ import {
   SetMeta,
   WritableSignal,
 } from './types';
-import {
-  createIteratorWithHelpers,
-  iteratorHelperKeys,
-} from './iteratorHelpers';
 
 /** The current proxy object for the raw object (others might exist but are not the current / clean ones). */
 const rawToProxy = new WeakMap<object, any>();

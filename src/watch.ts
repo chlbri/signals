@@ -14,7 +14,7 @@ import {
   isDeepSignal,
   subscribeDeepMutations,
 } from './deepSignal';
-import {
+import type {
   DeepPatch,
   DeepPatchBatch,
   DeepSignal,
@@ -24,7 +24,7 @@ import {
 
 export type RegisterCleanup = (cleanupFn: () => void) => void;
 
-export interface WatchOptions {
+export type WatchOptions = {
   /** True, if the callback should be run immediately after `watch` was called. @default false*/
   immediate?: boolean;
   /** True, if the watcher should be unsubscribed after the first event. @default false*/
@@ -36,16 +36,16 @@ export interface WatchOptions {
    * a separate (microtask) will cause the cursor in input elements to reset.
    */
   triggerInstantly?: boolean;
-}
+};
 
-export interface WatchPatchEvent<T extends object> {
+export type WatchPatchEvent<T extends object> = {
   /** The changes made */
   patches: DeepPatch[];
   /** The version if `triggerInstantly` is not true. */
   version?: number;
   /** The current value of the signal */
   newValue: DeepSignal<T>;
-}
+};
 
 export type WatchPatchCallback<T extends object> = (
   event: WatchPatchEvent<T>,

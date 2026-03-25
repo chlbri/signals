@@ -8,9 +8,8 @@
 // according to those terms.
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-import { deepSignal, shallow } from '../../index';
-import { describe, it, expect, beforeEach } from 'vitest';
-import { effect } from '../..';
+import { effect } from '../../core';
+import { deepSignal, shallow } from '../../deepSignal';
 type Store = {
   a?: number;
   nested: { b?: number };

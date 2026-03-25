@@ -8,11 +8,9 @@
 // according to those terms.
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-import { describe, it, expect } from 'vitest';
-import { deepSignal, addWithId, DeepPatch, DeepSignalOptions } from '../../';
-import { watch } from '../../watch';
-import { effect } from '../../';
+import { addWithId, DeepPatch, deepSignal, DeepSignalOptions, effect } from '../../';
 import { setSetEntrySyntheticId } from '../../deepSignal';
+import { watch } from '../../watch';
 
 describe('watch', () => {
   it('watch immediate', () => {

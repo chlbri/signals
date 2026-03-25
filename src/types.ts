@@ -8,7 +8,7 @@
 // according to those terms.
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-import { computed, alienSignal } from './core';
+import type { alienSignal, computed } from './core';
 
 /** Deep mutation emitted from a deepSignal root. */
 export type DeepPatch = {

@@ -1,7 +1,7 @@
 {
-  "name": "@bemedev///TODO",
+  "name": "@bemedev/signals",
   "version": "0.0.1",
-  "description": "//TODO",
+  "description": "Deep structural reactivity for plain objects / arrays / Sets built on top of alien-signals",
   "author": {
     "email": "bri_lvi@icloud.com",
     "name": "chlbri",
@@ -31,7 +31,11 @@
     }
   ],
   "keywords": [
-    "//TODO"
+    "signal",
+    "signals",
+    "deepsignals",
+    "alien-signals",
+    "alien-deepsignals"
   ],
   "files": [
     "lib",
@@ -86,6 +90,9 @@
       "limit": "10 KB"
     }
   ],
+  "dependencies": {
+    "alien-signals": "^2.0.7"
+  },
   "devDependencies": {
     "@bemedev/fsf": "^1.0.1",
     "@bemedev/rolldown-config": "^0.1.3",

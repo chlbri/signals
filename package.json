@@ -1,5 +1,5 @@
 {
-  "name": "@bemedev/alien-deepsignals",
+  "name": "@bemedev/signals",
   "version": "0.0.1",
   "description": "Deep structural reactivity for plain objects / arrays / Sets built on top of alien-signals",
   "author": {

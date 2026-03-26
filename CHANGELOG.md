@@ -5,6 +5,33 @@
 <details>
 <summary>
 
+## **[0.0.2] - 26/03/2026** => _04:06_
+
+</summary>
+
+- Remove `forEach` from `iteratorHelpers` (breaking change)
+- Refactor test structure: move all test files from `src/test/lib/` to
+  `src/test/`
+- Add `coverage.test.ts` — comprehensive branch-coverage tests for
+  `deepSignal` and `watch`
+- Fix `deepSignal.ts`: add `/* v8 ignore next */` annotations on
+  unreachable guard branches
+- Fix `watch.ts`: minor cleanup and `/* v8 ignore next */` annotations
+- Add `.github/skills/analyze-branches` — script + SKILL to analyse
+  uncovered branches from V8 JSON reports
+- Add `.github/skills/update-docs` — SKILL to update CHANGELOG/README
+  after a version bump
+- Remove `.github/rules/test.rules.md` (replaced by dedicated skills)
+- Update `tsconfig.json`: add `isolatedDeclarations` flag
+- <u>Test coverage **_100%_** — 199 tests across 6 suites</u>
+
+</details>
+
+<br/>
+
+<details>
+<summary>
+
 ## **[0.0.1] - 25/03/2026** => _16:42_
 
 </summary>

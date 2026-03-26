@@ -1,6 +1,6 @@
 {
   "name": "@bemedev/signals",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Deep structural reactivity for plain objects / arrays / Sets built on top of alien-signals",
   "author": {
     "email": "bri_lvi@icloud.com",
@@ -95,7 +95,7 @@
   },
   "devDependencies": {
     "@bemedev/fsf": "^1.0.1",
-    "@bemedev/rolldown-config": "^0.1.3",
+    "@bemedev/rolldown-config": "^0.4.2",
     "@bemedev/vitest-alias": "^0.0.3",
     "@bemedev/vitest-exclude": "^0.1.1",
     "@bemedev/vitest-extended": "^1.5.3",
